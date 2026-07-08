@@ -10,23 +10,31 @@
                             <i class="bi bi-mortarboard-fill text-white text-xl"></i>
                         </div>
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-900">Campus Today</h1>
+                            <h1 class="text-2xl font-bold text-gray-900">Study Social</h1>
                             <p class="text-sm text-gray-500">
-                                {{ userRole === 'student' ? 'You signed up as a Student ' : 'You signed up as a  Lecturer' }}
-                            </p>
+    {{ userRole === 'student' ? 'You signed up as a Student' : 'You signed up as a Lecturer' }}
+</p>
                         </div>
                     </div>
 
                     <div class="flex items-center space-x-6">
-                          <!-- Notifications -->
+                        <!-- Notifications -->
                         <div class="relative">
-                            <button @click="activeTab = 'messages'" 
+                            <button @click="activeTab = 'messages'"
                                 class="p-2 text-gray-600 hover:text-gray-900 relative transition-colors">
                                 <i class="bi bi-bell text-xl"></i>
                                 <span v-if="notifications > 0"
                                     class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
                                     {{ notifications }}
                                 </span>
+                            </button>
+                        </div>
+
+                        <!-- SignOut -->
+                        <div class="">
+                            <button @click="handleSignOut"
+                                class="p-2 bg-pink-400 hover:bg-pink-700 rounded-xl   text-white hover:text-gray-300 relative transition-colors">
+                                Signout
                             </button>
                         </div>
 
@@ -96,8 +104,8 @@
                     <div v-if="activeTab === 'dashboard'" class="space-y-8">
                         <DashPage :courses="courses" :messages="messages" :uploads="uploads" :posts="posts"
                             :username="username" :notifications="notifications" @create-post="handleCreatePost"
-                            @like-post="handleLikePost" @upload-file="handleFileUpload"
-                            @delete-post="handleDeletePost" @download-media="handleDownloadMedia" />
+                            @like-post="handleLikePost" @upload-file="handleFileUpload" @delete-post="handleDeletePost"
+                            @download-media="handleDownloadMedia" />
                     </div>
 
                     <!-- Courses -->
@@ -240,7 +248,7 @@
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <div v-if="showDeleteModal" 
+        <div v-if="showDeleteModal"
             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
             <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full">
                 <div class="text-center">
@@ -248,8 +256,9 @@
                         <i class="bi bi-exclamation-triangle text-red-600 text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-2">Delete Post?</h3>
-                    <p class="text-gray-600 mb-6">Are you sure you want to delete this post? This action cannot be undone.</p>
-                    
+                    <p class="text-gray-600 mb-6">Are you sure you want to delete this post? This action cannot be
+                        undone.</p>
+
                     <div class="flex space-x-3">
                         <button @click="cancelDelete"
                             class="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
@@ -267,12 +276,14 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
 import DashPage from '@/components/DashPage.vue'
 import MyCoursesPage from '@/components/MycoursesPage.vue'
 import { ref, computed, onMounted, watch } from 'vue'
 import { supabase } from '../supabase'
 
 const activeTab = ref('dashboard')
+const router = useRouter()
 const userRole = ref('student')
 const notifications = ref(3)
 const currentUser = ref(null)
@@ -446,6 +457,17 @@ const posts = ref([
     }
 ])
 
+const handleSignOut = async () => {
+  const { error } = await supabase.auth.signOut()
+  
+  if (error) {
+    console.error('Sign out error:', error.message)
+  } else {
+    console.log('✅ Signed out successfully')
+    router.push('/')  // Redirect to home page
+  }
+}
+
 // Event handlers for DashPage
 const handleCreatePost = (postData) => {
     const post = {
@@ -508,11 +530,11 @@ const handleDownloadMedia = async (mediaUrl, fileName) => {
             link.download = fileName || 'download'
             link.target = '_blank'
             link.rel = 'noopener noreferrer'
-            
+
             document.body.appendChild(link)
             link.click()
             document.body.removeChild(link)
-            
+
         } else {
             // For local files (videos from /public folder)
             const link = document.createElement('a')
