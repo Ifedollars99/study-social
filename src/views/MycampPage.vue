@@ -84,7 +84,7 @@
                                 <button @click="activeTab = 'content'"
                                     :class="['w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-base', activeTab === 'content' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100']">
                                     <i class="bi bi-file-earmark-text text-lg"></i>
-                                    <span>Content</span>
+                                    <span>Test</span>
                                 </button>
                             </li>
                             <li>
@@ -151,48 +151,143 @@
                         </div>
                     </div>
 
-                    <!-- Content -->
+                    <!-- Test (formerly Content) -->
                     <div v-if="activeTab === 'content'" class="space-y-6">
                         <div class="flex justify-between items-center mb-2">
-                            <h2 class="text-3xl font-bold">Course Content</h2>
-                            <button v-if="userRole === 'lecturer'"
-                                class="bg-green-600 text-white px-5 py-2.5 rounded-lg flex items-center space-x-2 hover:bg-green-700 transition-colors">
-                                <i class="bi bi-cloud-upload text-lg"></i>
-                                <span class="text-base">Upload Content</span>
+                            <h2 class="text-3xl font-bold">Take a Test</h2>
+                            <button v-if="testStep !== 'select-faculty'" @click="resetTest"
+                                class="text-gray-600 hover:text-gray-900 flex items-center space-x-2 text-sm">
+                                <i class="bi bi-arrow-left"></i>
+                                <span>Start Over</span>
                             </button>
                         </div>
 
-                        <div class="bg-white rounded-lg shadow-sm border border-gray-100">
-                            <div class="p-5 border-b border-gray-100">
+                        <!-- Step 1: Select Faculty -->
+                        <div v-if="testStep === 'select-faculty'" class="space-y-4">
+                            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-5">
                                 <div class="flex items-center space-x-4">
                                     <i class="bi bi-search text-gray-400 text-lg"></i>
-                                    <input type="text" placeholder="Search content..."
+                                    <input v-model="testSearchQuery" type="text" placeholder="Search faculty..."
                                         class="flex-1 outline-none text-base" />
                                 </div>
                             </div>
 
-                            <div class="divide-y divide-gray-100">
-                                <div v-for="upload in uploads" :key="upload.id" class="p-5 hover:bg-gray-50">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center space-x-4">
-                                            <div
-                                                class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                                                <i class="bi bi-file-earmark-pdf text-orange-600 text-xl"></i>
-                                            </div>
-                                            <div>
-                                                <h4 class="font-medium text-base">{{ upload.title }}</h4>
-                                                <p class="text-base text-gray-600">
-                                                    {{ upload.course }} • Uploaded by {{ upload.uploadedBy }}
-                                                </p>
-                                                <p class="text-sm text-gray-500">{{ upload.type }} • {{ upload.size }}
-                                                </p>
-                                            </div>
+                            <p class="text-gray-600">Select your faculty at Olabisi Onabanjo University (OOU)</p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div v-for="faculty in filteredTestFaculties" :key="faculty.id"
+                                    @click="selectTestFaculty(faculty)"
+                                    class="bg-white rounded-lg shadow-sm border border-gray-100 p-5 cursor-pointer hover:border-blue-400 hover:shadow-md transition-all">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <i class="bi bi-bank text-blue-600 text-xl"></i>
                                         </div>
-                                        <button class="text-blue-600 hover:text-blue-800 transition-colors p-2">
-                                            <i class="bi bi-download text-2xl"></i>
-                                        </button>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900 text-base">{{ faculty.name }}</h4>
+                                            <p class="text-sm text-gray-500">{{ faculty.departments.length }} departments</p>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <div v-if="filteredTestFaculties.length === 0" class="col-span-full text-center text-gray-500 py-8">
+                                    No faculty matches "{{ testSearchQuery }}"
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Select Department -->
+                        <div v-if="testStep === 'select-department'" class="space-y-4">
+                            <div class="flex items-center space-x-2 text-sm text-gray-500">
+                                <button @click="backToFaculties" class="hover:text-blue-600 flex items-center space-x-1">
+                                    <i class="bi bi-arrow-left"></i>
+                                    <span>Faculties</span>
+                                </button>
+                                <i class="bi bi-chevron-right"></i>
+                                <span class="font-medium text-gray-800">{{ selectedTestFaculty.name }}</span>
+                            </div>
+
+                            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-5">
+                                <div class="flex items-center space-x-4">
+                                    <i class="bi bi-search text-gray-400 text-lg"></i>
+                                    <input v-model="testSearchQuery" type="text" placeholder="Search department..."
+                                        class="flex-1 outline-none text-base" />
+                                </div>
+                            </div>
+
+                            <p class="text-gray-600">Select a department under {{ selectedTestFaculty.name }}</p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div v-for="department in filteredTestDepartments" :key="department.id"
+                                    @click="selectTestDepartment(department)"
+                                    class="bg-white rounded-lg shadow-sm border border-gray-100 p-5 cursor-pointer hover:border-blue-400 hover:shadow-md transition-all">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <i class="bi bi-journal-bookmark text-green-600 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900 text-base">{{ department.name }}</h4>
+                                            <p class="text-sm text-gray-500">Tap to start a 10-question test</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div v-if="filteredTestDepartments.length === 0" class="col-span-full text-center text-gray-500 py-8">
+                                    No department matches "{{ testSearchQuery }}"
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Taking the Test -->
+                        <div v-if="testStep === 'test'" class="space-y-6">
+                            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-xl font-bold text-gray-900">{{ selectedTestDepartment.name }} Test</h3>
+                                    <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
+                                        {{ answeredCount }} / {{ currentQuestions.length }} answered
+                                    </span>
+                                </div>
+                                <p class="text-gray-500 text-sm">{{ selectedTestFaculty.name }}</p>
+                            </div>
+
+                            <div v-for="(question, index) in currentQuestions" :key="question.id"
+                                class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+                                <h4 class="font-semibold text-gray-900 text-base mb-4">
+                                    {{ index + 1 }}. {{ question.question }}
+                                </h4>
+                                <div class="space-y-2">
+                                    <label v-for="(option, oIndex) in question.options" :key="oIndex"
+                                        :class="['flex items-center space-x-3 p-3 rounded-lg border cursor-pointer transition-colors',
+                                            userAnswers[question.id] === oIndex ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-50']">
+                                        <input type="radio" :name="'question-' + question.id"
+                                            :checked="userAnswers[question.id] === oIndex"
+                                            @change="userAnswers[question.id] = oIndex" class="text-blue-600">
+                                        <span class="text-base text-gray-700">{{ option }}</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 flex justify-between items-center">
+                                <p class="text-sm text-gray-500">You can review your answers before submitting.</p>
+                                <button @click="submitTest"
+                                    class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors">
+                                    Submit Test
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Result -->
+                        <div v-if="testStep === 'result'" class="space-y-6">
+                            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-8 text-center">
+                                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="bi bi-check-circle text-green-600 text-3xl"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-gray-900 mb-2">Test Submitted!</h3>
+                                <p class="text-gray-600 mb-1">{{ selectedTestDepartment.name }} • {{ selectedTestFaculty.name }}</p>
+                                <p class="text-4xl font-bold text-blue-600 my-4">{{ testScore }} / {{ currentQuestions.length }}</p>
+                                <button @click="resetTest"
+                                    class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors">
+                                    Take Another Test
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -234,12 +329,16 @@
                                     </div>
                                 </div>
                                 <div class="mt-5 pt-5 border-t border-gray-100">
-                                    <button
-                                        class="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-base">
-                                        {{ assignment.status === 'submitted' ? 'View Submission' : 'Submit Assignment'
-                                        }}
-                                    </button>
-                                </div>
+    <button @click="handleSubmitAssignment(assignment.id)"
+        :disabled="assignment.status === 'submitted'"
+        class="w-full py-2.5 rounded-lg text-base transition-colors"
+        :class="assignment.status === 'submitted' ? 'bg-green-600 text-white cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'">
+        <span v-if="assignment.status === 'submitted'">
+            <i class="bi bi-check-circle-fill mr-1"></i> Yes, it has been submitted
+        </span>
+        <span v-else>Submit Assignment</span>
+    </button>
+</div>
                             </div>
                         </div>
                     </div>
@@ -387,7 +486,7 @@ const assignments = ref([
     {
         id: 1,
         title: 'Calculus Problem Set 3',
-        course: 'Advanced Mathematics',
+        course: 'CMP 448 - Distributed Systems',
         dueDate: 'Sept 25, 2024',
         timeLeft: '2 days left',
         status: 'pending'
@@ -395,7 +494,7 @@ const assignments = ref([
     {
         id: 2,
         title: 'Lab Report: Motion Analysis',
-        course: 'Physics Laboratory',
+        course: 'CMP 411 - Computer Networks',
         dueDate: 'Sept 27, 2024',
         timeLeft: '4 days left',
         status: 'pending'
@@ -403,7 +502,7 @@ const assignments = ref([
     {
         id: 3,
         title: 'Algorithm Implementation',
-        course: 'Computer Science',
+        course: 'CMP 405 - Algorithms and Complexity',
         dueDate: 'Sept 22, 2024',
         timeLeft: 'Overdue',
         status: 'overdue'
@@ -411,7 +510,7 @@ const assignments = ref([
     {
         id: 4,
         title: 'Chemical Equations Quiz',
-        course: 'Chemistry Basics',
+        course: 'CMP 422 - Database Management Systems',
         dueDate: 'Sept 20, 2024',
         timeLeft: 'Submitted',
         status: 'submitted'
@@ -456,6 +555,140 @@ const posts = ref([
         comments: 7
     }
 ])
+
+/* ===================== Test feature (Content tab) ===================== */
+
+// Sample OOU faculty/department structure — replace with real data later
+const testFaculties = ref([
+    {
+        id: 1,
+        name: 'Faculty of Science',
+        departments: [
+            { id: 101, name: 'Computer Science' },
+            { id: 102, name: 'Data Engineering' },
+            { id: 103, name: 'Engineering' },
+            { id: 104, name: 'Cybersecurity' },
+            { id: 105, name: 'Machine Learning' }
+        ]
+    },
+    {
+        id: 2,
+        name: 'Faculty of Arts',
+        departments: [
+            { id: 201, name: 'English Language' },
+            { id: 202, name: 'History' },
+            { id: 203, name: 'Philosophy' }
+        ]
+    },
+    {
+        id: 3,
+        name: 'Faculty of Social Sciences',
+        departments: [
+            { id: 301, name: 'Economics' },
+            { id: 302, name: 'Political Science' },
+            { id: 303, name: 'Mass Communication' }
+        ]
+    },
+    {
+        id: 4,
+        name: 'Faculty of Management Sciences',
+        departments: [
+            { id: 401, name: 'Accounting' },
+            { id: 402, name: 'Business Administration' },
+            { id: 403, name: 'Marketing' }
+        ]
+    }
+])
+
+// Placeholder question pool — 10 random questions are drawn from this on each test
+const questionPool = ref([
+    { id: 1, question: 'What does CPU stand for?', options: ['Central Processing Unit', 'Computer Personal Unit', 'Central Program Utility', 'Central Processor Unicode'], correctIndex: 0 },
+    { id: 2, question: 'Which language runs in a web browser?', options: ['Java', 'C', 'Python', 'JavaScript'], correctIndex: 3 },
+    { id: 3, question: 'What is the capital of Nigeria?', options: ['Lagos', 'Abuja', 'Ibadan', 'Kano'], correctIndex: 1 },
+    { id: 4, question: 'H2O is the chemical formula for what?', options: ['Oxygen', 'Hydrogen', 'Water', 'Salt'], correctIndex: 2 },
+    { id: 5, question: 'Which of these is a prime number?', options: ['4', '6', '9', '7'], correctIndex: 3 },
+    { id: 6, question: 'Who is known as the father of computers?', options: ['Charles Babbage', 'Alan Turing', 'Bill Gates', 'Steve Jobs'], correctIndex: 0 },
+    { id: 7, question: 'What is the powerhouse of the cell?', options: ['Nucleus', 'Mitochondria', 'Ribosome', 'Cytoplasm'], correctIndex: 1 },
+    { id: 8, question: 'Which planet is known as the Red Planet?', options: ['Venus', 'Jupiter', 'Mars', 'Saturn'], correctIndex: 2 },
+    { id: 9, question: 'What does HTML stand for?', options: ['Hyper Trainer Marking Language', 'HyperText Markup Language', 'HyperText Machine Language', 'Hyperlink Text Markup Language'], correctIndex: 1 },
+    { id: 10, question: 'Which gas do plants absorb from the atmosphere?', options: ['Oxygen', 'Nitrogen', 'Carbon Dioxide', 'Hydrogen'], correctIndex: 2 },
+    { id: 11, question: 'What is 12 x 8?', options: ['96', '86', '106', '94'], correctIndex: 0 },
+    { id: 12, question: 'Which of these is an operating system?', options: ['Microsoft Word', 'Windows', 'Excel', 'Chrome'], correctIndex: 1 },
+    { id: 13, question: 'Who wrote "Things Fall Apart"?', options: ['Wole Soyinka', 'Chinua Achebe', 'Chimamanda Adichie', 'Ben Okri'], correctIndex: 1 },
+    { id: 14, question: 'What is the boiling point of water at sea level (°C)?', options: ['90', '100', '110', '120'], correctIndex: 1 },
+    { id: 15, question: 'Which currency is used in Nigeria?', options: ['Cedi', 'Naira', 'Rand', 'Franc'], correctIndex: 1 }
+])
+
+const testStep = ref('select-faculty') // select-faculty | select-department | test | result
+const testSearchQuery = ref('')
+const selectedTestFaculty = ref(null)
+const selectedTestDepartment = ref(null)
+const currentQuestions = ref([])
+const userAnswers = ref({})
+const testScore = ref(0)
+
+const filteredTestFaculties = computed(() => {
+    if (!testSearchQuery.value) return testFaculties.value
+    const query = testSearchQuery.value.toLowerCase()
+    return testFaculties.value.filter(f => f.name.toLowerCase().includes(query))
+})
+
+const filteredTestDepartments = computed(() => {
+    if (!selectedTestFaculty.value) return []
+    if (!testSearchQuery.value) return selectedTestFaculty.value.departments
+    const query = testSearchQuery.value.toLowerCase()
+    return selectedTestFaculty.value.departments.filter(d => d.name.toLowerCase().includes(query))
+})
+
+const answeredCount = computed(() => Object.keys(userAnswers.value).length)
+
+const selectTestFaculty = (faculty) => {
+    selectedTestFaculty.value = faculty
+    testSearchQuery.value = ''
+    testStep.value = 'select-department'
+}
+
+const backToFaculties = () => {
+    selectedTestFaculty.value = null
+    testSearchQuery.value = ''
+    testStep.value = 'select-faculty'
+}
+
+const getRandomQuestions = (count) => {
+    const shuffled = [...questionPool.value].sort(() => Math.random() - 0.5)
+    return shuffled.slice(0, count)
+}
+
+const selectTestDepartment = (department) => {
+    selectedTestDepartment.value = department
+    testSearchQuery.value = ''
+    currentQuestions.value = getRandomQuestions(10)
+    userAnswers.value = {}
+    testStep.value = 'test'
+}
+
+const submitTest = () => {
+    let score = 0
+    currentQuestions.value.forEach(q => {
+        if (userAnswers.value[q.id] === q.correctIndex) {
+            score++
+        }
+    })
+    testScore.value = score
+    testStep.value = 'result'
+}
+
+const resetTest = () => {
+    testStep.value = 'select-faculty'
+    selectedTestFaculty.value = null
+    selectedTestDepartment.value = null
+    testSearchQuery.value = ''
+    currentQuestions.value = []
+    userAnswers.value = {}
+    testScore.value = 0
+}
+
+/* ===================== End Test feature ===================== */
 
 const handleSignOut = async () => {
   const { error } = await supabase.auth.signOut()
@@ -517,6 +750,15 @@ const cancelDelete = () => {
 // Course added handler
 const handleCourseAdded = (newCourse) => {
     courses.value.unshift(newCourse)
+}
+
+// submit assignment
+const handleSubmitAssignment = (assignmentId) => {
+    const assignment = assignments.value.find(a => a.id === assignmentId)
+    if (assignment && assignment.status !== 'submitted') {
+        assignment.status = 'submitted'
+        assignment.timeLeft = 'Submitted'
+    }
 }
 
 // Improved Download media handler
