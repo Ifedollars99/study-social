@@ -1,139 +1,241 @@
 <template>
-    <!-- Welcome Section -->
-    <div class="bg-gradient-to-r from-gray-500 to-black rounded-xl p-8 text-white">
-        <h2 class="text-3xl font-bold mb-3">Welcome back, {{ username }}!</h2>
-        <p class="text-lg opacity-90">You have {{ notifications }} new notifications and {{ pendingAssignments }} pending assignments</p>
-    </div>
-
-    <!-- Create Post Section -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-        <div class="flex items-center space-x-4 mb-4">
-            <div class="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
-                <span class="text-white text-base font-semibold">{{ username.charAt(0).toUpperCase() }}</span>
-            </div>
-            <button @click="showCreatePost = true" 
-                class="flex-1 text-left px-4 py-3 bg-gray-50 rounded-full text-gray-500 hover:bg-gray-100 transition-colors">
-                Share something educational with your community...
-            </button>
-        </div>
+    <!-- Welcome Section - More Spacious & Premium -->
+    <div class="relative overflow-hidden bg-gradient-to-br from-[#1C2B39] via-[#1C2B39] to-[#2A3F54] rounded-2xl p-12 text-white shadow-lg">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-[#C6862E]/5 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-20 -left-20 w-60 h-60 bg-[#2F6F5E]/5 rounded-full blur-3xl"></div>
         
-        <!-- Create Post Modal/Expanded Form -->
-        <div v-if="showCreatePost" class="border-t pt-4 space-y-4">
-            <textarea v-model="newPost.content" 
-                placeholder="Share educational content, tips, or resources..."
-                class="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows="3"></textarea>
-            
-             <div class="flex flex-col md:flex-row gap-3 md:items-center">
-                <select v-model="newPost.subject" 
-                    class="w-full md:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Select Subject</option>
-                    <option v-for="course in courses" :key="course.id" :value="course.title">
-                        {{ course.title }}
-                    </option>
-                </select>
-                
-                <input type="file" @change="handleFileUpload" accept="image/*,video/*" 
-                    class="hidden" ref="fileInput" id="fileUpload">
-                <label for="fileUpload" 
-                    class="w-full md:w-auto px-4 py-2 bg-blue-100 text-blue-600 rounded-lg cursor-pointer hover:bg-blue-200 transition-colors flex items-center justify-center space-x-2">
-                    <i class="bi bi-camera"></i>
-                    <span>Add Media</span>
-                </label>
-            </div>
-            
-            <!-- Media Preview -->
-            <div v-if="newPost.mediaUrl" class="relative">
-                <img v-if="newPost.mediaType === 'image'" :src="newPost.mediaUrl" 
-                    class="max-h-48 rounded-lg object-cover" alt="Preview">
-                <video v-else-if="newPost.mediaType === 'video'" :src="newPost.mediaUrl" 
-                    class="max-h-48 rounded-lg" controls></video>
-                <button @click="newPost.mediaUrl = ''; newPost.mediaType = 'none'" 
-                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600">
-                    ×
-                </button>
-            </div>
-            
-            <div class="flex justify-end space-x-3">
-                <button @click="showCreatePost = false" 
-                    class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
-                    Cancel
-                </button>
-                <button @click="createPost" 
-                    :disabled="!newPost.content.trim()"
-                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                    Post
-                </button>
-            </div>
+        <div class="relative z-10">
+            <p class="text-[#C6862E] text-sm font-medium tracking-wide mb-2 uppercase">Welcome back</p>
+            <h1 class="font-heading text-5xl font-semibold mb-4">{{ username }}</h1>
+            <p class="text-lg text-white/70 max-w-2xl leading-relaxed">
+                You have <span class="text-[#C6862E] font-medium">{{ notifications }} new notifications</span> and 
+                <span class="text-[#2F6F5E] font-medium">{{ pendingAssignments }} pending assignments</span> waiting for your attention.
+            </p>
         </div>
     </div>
 
-    <!-- Quick Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">   
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-600 text-base mb-1">Active Courses</p>
-                    <p class="text-3xl font-bold text-gray-900">{{ courses.length }}</p>
-                </div>
-                <i class="bi bi-book text-3xl text-blue-500"></i>
-            </div>
-        </div>
-        <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-600 text-base mb-1">Messages</p>
-                    <p class="text-3xl font-bold text-gray-900">{{ messages.length }}</p>
-                </div>
-                <i class="bi bi-chat-dots text-3xl text-green-500"></i>
-            </div>
-        </div>
-        <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-600 text-base mb-1">Community Posts</p>
-                    <p class="text-3xl font-bold text-gray-900">{{ posts.length }}</p>
-                </div>
-                <i class="bi bi-people text-3xl text-orange-500"></i>
-            </div>
-        </div>
-    </div>
-
-    <!-- Educational Posts Feed -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-100">
-        <div class="p-6 border-b border-gray-100">
-            <h3 class="text-xl font-semibold">Educational Community</h3>
-        </div>
-        
-        <div class="divide-y divide-gray-100">
-            <div v-for="post in posts" :key="post.id" class="p-6">
-                <!-- Post Header -->
-                <div class="flex items-start space-x-4 mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-                        <span class="text-white text-base font-semibold">{{ post.author.charAt(0).toUpperCase() }}</span>
+    <!-- Expanded Quick Stats - Premium Grid with More Visual Presence -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Active Courses Stat -->
+        <div class="group relative bg-white rounded-2xl overflow-hidden border border-[#E4E0D8] shadow-sm hover:shadow-xl transition-all duration-500">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#FBF3E4]/30 via-transparent to-transparent"></div>
+            <div class="relative p-8 h-full flex flex-col">
+                <div class="flex items-start justify-between mb-8">
+                    <div>
+                        <p class="text-[#8B95A0] text-sm font-medium tracking-wide mb-3">ACTIVE COURSES</p>
+                        <p class="font-heading text-6xl font-semibold text-[#1C2B39]">{{ courses.length }}</p>
+                        <p class="text-[#8B95A0] text-sm mt-2">courses in progress</p>
                     </div>
-                    <div class="flex-1">
-                        <div class="flex items-center space-x-2">
-                            <h4 class="font-medium text-base">{{ post.author }}</h4>
-                            <span :class="['px-2 py-1 rounded-full text-xs font-medium',
-                                post.authorRole === 'lecturer' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800']">
-                                {{ post.authorRole }}
+                    <div class="w-16 h-16 bg-gradient-to-br from-[#FBF3E4] to-[#F5E6C8] rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
+                        <i class="bi bi-book text-3xl text-[#C6862E]"></i>
+                    </div>
+                </div>
+                
+                <!-- Courses Preview -->
+                <div class="mt-auto pt-6 border-t border-[#E4E0D8]">
+                    <div class="space-y-2">
+                        <div v-for="(course) in courses.slice(0, 3)" :key="course.id" class="flex items-center text-sm text-[#5B6672]">
+                            <span class="inline-block w-2 h-2 bg-[#C6862E] rounded-full mr-3"></span>
+                            {{ course.title }}
+                        </div>
+                    </div>
+                    <button v-if="courses.length > 3" class="mt-4 text-[#C6862E] text-sm font-medium hover:text-[#B37726] transition-colors">
+                        View all {{ courses.length - 3 }} courses →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Stat -->
+        <div class="group relative bg-white rounded-2xl overflow-hidden border border-[#E4E0D8] shadow-sm hover:shadow-xl transition-all duration-500">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#E9F2EF]/30 via-transparent to-transparent"></div>
+            <div class="relative p-8 h-full flex flex-col">
+                <div class="flex items-start justify-between mb-8">
+                    <div>
+                        <p class="text-[#8B95A0] text-sm font-medium tracking-wide mb-3">MESSAGES</p>
+                        <p class="font-heading text-6xl font-semibold text-[#1C2B39]">{{ messages.length }}</p>
+                        <p class="text-[#8B95A0] text-sm mt-2">unread conversations</p>
+                    </div>
+                    <div class="w-16 h-16 bg-gradient-to-br from-[#E9F2EF] to-[#D4E8E1] rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
+                        <i class="bi bi-chat-dots text-3xl text-[#2F6F5E]"></i>
+                    </div>
+                </div>
+                
+                <!-- Messages Summary -->
+                <div class="mt-auto pt-6 border-t border-[#E4E0D8]">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-[#5B6672]">Response time</span>
+                            <span class="text-[#2F6F5E] font-medium">2.4 hours</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-[#E4E0D8] rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-[#2F6F5E] to-[#4A9B89] rounded-full" style="width: 78%"></div>
+                        </div>
+                    </div>
+                    <button class="mt-4 text-[#2F6F5E] text-sm font-medium hover:text-[#1F5242] transition-colors">
+                        Open inbox →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Community Posts Stat -->
+        <div class="group relative bg-white rounded-2xl overflow-hidden border border-[#E4E0D8] shadow-sm hover:shadow-xl transition-all duration-500">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#EFEAE0]/40 via-transparent to-transparent"></div>
+            <div class="relative p-8 h-full flex flex-col">
+                <div class="flex items-start justify-between mb-8">
+                    <div>
+                        <p class="text-[#8B95A0] text-sm font-medium tracking-wide mb-3">COMMUNITY POSTS</p>
+                        <p class="font-heading text-6xl font-semibold text-[#1C2B39]">{{ posts.length }}</p>
+                        <p class="text-[#8B95A0] text-sm mt-2">in the feed</p>
+                    </div>
+                    <div class="w-16 h-16 bg-gradient-to-br from-[#EFEAE0] to-[#E4D9CC] rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
+                        <i class="bi bi-people text-3xl text-[#1C2B39]"></i>
+                    </div>
+                </div>
+                
+                <!-- Engagement Stats -->
+                <div class="mt-auto pt-6 border-t border-[#E4E0D8]">
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-[#5B6672]">Your engagement</span>
+                            <span class="text-[#1C2B39] font-medium">12 interactions</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="inline-flex items-center space-x-1 text-xs px-2 py-1 bg-[#FBF3E4] text-[#C6862E] rounded-full">
+                                <i class="bi bi-heart text-xs"></i>
+                                <span>28 likes</span>
+                            </span>
+                            <span class="inline-flex items-center space-x-1 text-xs px-2 py-1 bg-[#E9F2EF] text-[#2F6F5E] rounded-full">
+                                <i class="bi bi-chat text-xs"></i>
+                                <span>8 comments</span>
                             </span>
                         </div>
-                        <div class="flex items-center space-x-2 text-sm text-gray-500">
-                            <span v-if="post.subject" class="flex items-center">
-                                <i class="bi bi-book mr-1"></i>
-                                {{ post.subject }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Post Section - Refined -->
+    <div class="bg-white rounded-2xl border border-[#E4E0D8] overflow-hidden shadow-sm">
+        <div class="p-8 bg-gradient-to-r from-white via-[#FBF3E4]/20 to-white">
+            <div class="flex items-center space-x-4 mb-6">
+                <div class="w-14 h-14 bg-gradient-to-br from-[#C6862E] to-[#B37726] rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                    <span class="text-white text-lg font-semibold">{{ username.charAt(0).toUpperCase() }}</span>
+                </div>
+                <button @click="showCreatePost = true" 
+                    class="flex-1 text-left px-6 py-3.5 bg-[#F7F5F0] rounded-full text-[#8B95A0] hover:bg-[#EFE9DE] transition-all duration-300 focus:ring-2 focus:ring-[#C6862E] focus:ring-offset-2 font-medium">
+                    Share something educational with your community...
+                </button>
+            </div>
+            
+            <!-- Create Post Modal/Expanded Form -->
+            <div v-if="showCreatePost" class="border-t border-[#E4E0D8] pt-8 space-y-6 animate-fade-in">
+                <div>
+                    <label class="block text-sm font-medium text-[#5B6672] mb-3">Your insight</label>
+                    <textarea v-model="newPost.content" 
+                        placeholder="Share educational content, tips, resources, or questions..."
+                        class="w-full p-4 border border-[#E4E0D8] rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[#C6862E] focus:border-transparent text-[#1C2B39] placeholder-[#8B95A0] leading-relaxed"
+                        rows="4"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-[#5B6672] mb-3">Subject</label>
+                        <select v-model="newPost.subject" 
+                            class="w-full px-4 py-2.5 border border-[#E4E0D8] rounded-xl text-[#1C2B39] focus:outline-none focus:ring-2 focus:ring-[#C6862E] focus:border-transparent font-medium">
+                            <option value="">Select a subject...</option>
+                            <option v-for="course in courses" :key="course.id" :value="course.title">
+                                {{ course.title }}
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-[#5B6672] mb-3">Add media</label>
+                        <input type="file" @change="handleFileUpload" accept="image/*,video/*" 
+                            class="hidden" ref="fileInput" id="fileUpload">
+                        <label for="fileUpload" 
+                            class="w-full px-4 py-2.5 bg-gradient-to-r from-[#FBF3E4] to-[#F5E6C8] text-[#C6862E] rounded-xl cursor-pointer hover:from-[#F5E6C8] hover:to-[#EFDAB0] transition-all duration-300 flex items-center justify-center space-x-2 font-medium border border-[#E4E0D8]">
+                            <i class="bi bi-image text-lg"></i>
+                            <span>Choose image or video</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Media Preview -->
+                <div v-if="newPost.mediaUrl" class="relative rounded-xl overflow-hidden border border-[#E4E0D8]">
+                    <img v-if="newPost.mediaType === 'image'" :src="newPost.mediaUrl" 
+                        class="w-full max-h-64 object-cover" alt="Preview">
+                    <video v-else-if="newPost.mediaType === 'video'" :src="newPost.mediaUrl" 
+                        class="w-full max-h-64 object-cover" controls></video>
+                    <button @click="newPost.mediaUrl = ''; newPost.mediaType = 'none'" 
+                        class="absolute top-3 right-3 bg-[#8B3A3A]/90 hover:bg-[#732E2E] text-white rounded-lg w-8 h-8 flex items-center justify-center text-lg transition-colors shadow-md">
+                        ✕
+                    </button>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button @click="showCreatePost = false" 
+                        class="px-6 py-2.5 text-[#5B6672] hover:text-[#1C2B39] transition-colors font-medium">
+                        Cancel
+                    </button>
+                    <button @click="createPost" 
+                        :disabled="!newPost.content.trim()"
+                        class="px-8 py-2.5 bg-gradient-to-r from-[#C6862E] to-[#B37726] text-white rounded-xl hover:shadow-lg hover:from-[#B37726] hover:to-[#9D6620] transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed font-medium">
+                        Share Post
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Educational Posts Feed - Premium Treatment -->
+    <div class="bg-white rounded-2xl border border-[#E4E0D8] overflow-hidden shadow-sm">
+        <div class="px-8 py-8 border-b border-[#E4E0D8] bg-gradient-to-r from-white via-[#EFEAE0]/10 to-white">
+            <h2 class="font-heading text-3xl font-semibold text-[#1C2B39]">Educational Community</h2>
+            <p class="text-[#8B95A0] mt-2">Connect, learn, and share knowledge with your peers</p>
+        </div>
+        
+        <div class="divide-y divide-[#E4E0D8]">
+            <div v-if="posts.length === 0" class="p-12 text-center">
+                <div class="w-16 h-16 bg-[#FBF3E4] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="bi bi-chat-dots text-2xl text-[#C6862E]"></i>
+                </div>
+                <p class="text-[#8B95A0] text-lg">No posts yet. Be the first to share something!</p>
+            </div>
+
+            <div v-for="post in posts" :key="post.id" class="p-8 hover:bg-[#FAFAF8] transition-colors duration-300">
+                <!-- Post Header -->
+                <div class="flex items-start space-x-4 mb-6">
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#EFEAE0] to-[#E4D9CC] rounded-full flex items-center justify-center flex-shrink-0 shadow-sm border border-[#E4E0D8]">
+                        <span class="text-[#1C2B39] text-lg font-semibold">{{ post.author.charAt(0).toUpperCase() }}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center space-x-3 flex-wrap">
+                            <h3 class="font-semibold text-lg text-[#1C2B39]">{{ post.author }}</h3>
+                            <span :class="['px-3 py-1 rounded-full text-xs font-semibold',
+                                post.authorRole === 'lecturer' ? 'bg-[#FBF3E4] text-[#C6862E] border border-[#E4E0D8]' : 'bg-[#E9F2EF] text-[#2F6F5E] border border-[#D4E8E1]']">
+                                {{ post.authorRole === 'lecturer' ? '👨‍🏫 Lecturer' : '📚 Student' }}
                             </span>
-                            <span>•</span>
-                            <span>{{ formatTimeAgo(post.timestamp) }}</span>
+                        </div>
+                        <div class="flex items-center space-x-3 text-sm text-[#8B95A0] mt-2 flex-wrap">
+                            <span v-if="post.subject" class="flex items-center space-x-1 bg-[#F7F5F0] px-3 py-1 rounded-full">
+                                <i class="bi bi-bookmark"></i>
+                                <span>{{ post.subject }}</span>
+                            </span>
+                            <span class="flex items-center space-x-1">
+                                <i class="bi bi-clock"></i>
+                                <span>{{ formatTimeAgo(post.timestamp) }}</span>
+                            </span>
                         </div>
                     </div>
                     
-                    <!-- Delete button - only show for current user's posts -->
-                    <div v-if="post.author === username" class="relative">
+                    <!-- Delete button -->
+                    <div v-if="post.author === username" class="flex-shrink-0">
                         <button @click="deletePost(post.id)" 
-                            class="text-gray-400 hover:text-red-500 transition-colors p-2"
+                            class="text-[#8B95A0] hover:text-[#8B3A3A] hover:bg-[#FBE4E4] p-2.5 rounded-lg transition-all duration-300"
                             title="Delete post">
                             <i class="bi bi-trash text-lg"></i>
                         </button>
@@ -141,33 +243,31 @@
                 </div>
                 
                 <!-- Post Content -->
-                <div class="mb-4">
-                    <p class="text-base text-gray-800 leading-relaxed">{{ post.content }}</p>
+                <div class="mb-6 ml-18">
+                    <p class="text-base text-[#1C2B39] leading-relaxed">{{ post.content }}</p>
                 </div>
                 
-                <!-- Post Media with Download Button -->
-                <div v-if="post.mediaType === 'image'" class="mb-4 relative group">
+                <!-- Post Media -->
+                <div v-if="post.mediaType === 'image'" class="mb-6 ml-18 relative group rounded-xl overflow-hidden border border-[#E4E0D8]">
                     <img :src="post.mediaUrl" 
-                        class="w-full max-h-96 object-cover rounded-lg border border-gray-200" 
+                        class="w-full max-h-96 object-cover" 
                         :alt="post.content">
-                    <!-- Download button for images -->
                     <button 
                         @click="downloadMedia(post.mediaUrl, `${post.author}-${post.id}.jpg`)"
-                        class="absolute top-3 right-3 bg-black bg-opacity-60 hover:bg-opacity-80 text-white p-2.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center space-x-2"
+                        class="absolute top-4 right-4 bg-[#1C2B39]/80 hover:bg-[#1C2B39] text-white p-3 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center space-x-2 shadow-lg"
                         title="Download image">
                         <i class="bi bi-download text-lg"></i>
                         <span class="text-sm font-medium">Download</span>
                     </button>
                 </div>
                 
-                <div v-else-if="post.mediaType === 'video'" class="mb-4 relative group">
+                <div v-else-if="post.mediaType === 'video'" class="mb-6 ml-18 relative group rounded-xl overflow-hidden border border-[#E4E0D8]">
                     <video :src="post.mediaUrl" 
-                        class="w-full max-h-96 rounded-lg border border-gray-200" 
+                        class="w-full max-h-96 object-cover" 
                         controls></video>
-                    <!-- Download button for videos -->
                     <button 
                         @click="downloadMedia(post.mediaUrl, `${post.author}-${post.id}.mp4`)"
-                        class="absolute top-3 right-3 bg-black bg-opacity-60 hover:bg-opacity-80 text-white p-2.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center space-x-2"
+                        class="absolute top-4 right-4 bg-[#1C2B39]/80 hover:bg-[#1C2B39] text-white p-3 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center space-x-2 shadow-lg"
                         title="Download video">
                         <i class="bi bi-download text-lg"></i>
                         <span class="text-sm font-medium">Download</span>
@@ -175,23 +275,29 @@
                 </div>
                 
                 <!-- Post Actions -->
-                <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-                    <div class="flex items-center space-x-6">
+                <div class="flex items-center justify-between pt-6 border-t border-[#E4E0D8] ml-18">
+                    <div class="flex items-center space-x-8">
                         <button @click="likePost(post.id)" 
-                            class="flex items-center space-x-2 text-gray-600 hover:text-red-500 transition-colors">
-                            <i class="bi bi-heart text-lg"></i>
-                            <span class="text-sm">{{ post.likes }}</span>
+                            class="flex items-center space-x-2 text-[#8B95A0] hover:text-[#C6862E] group transition-colors">
+                            <div class="p-2 rounded-lg group-hover:bg-[#FBF3E4] transition-colors">
+                                <i class="bi bi-heart text-lg"></i>
+                            </div>
+                            <span class="text-sm font-medium">{{ post.likes }}</span>
                         </button>
-                        <button class="flex items-center space-x-2 text-gray-600 hover:text-blue-500 transition-colors">
-                            <i class="bi bi-chat text-lg"></i>
-                            <span class="text-sm">{{ post.comments }}</span>
+                        <button class="flex items-center space-x-2 text-[#8B95A0] hover:text-[#2F6F5E] group transition-colors">
+                            <div class="p-2 rounded-lg group-hover:bg-[#E9F2EF] transition-colors">
+                                <i class="bi bi-chat text-lg"></i>
+                            </div>
+                            <span class="text-sm font-medium">{{ post.comments }}</span>
                         </button>
-                        <button class="flex items-center space-x-2 text-gray-600 hover:text-green-500 transition-colors">
-                            <i class="bi bi-share text-lg"></i>
-                            <span class="text-sm">Share</span>
+                        <button class="flex items-center space-x-2 text-[#8B95A0] hover:text-[#1C2B39] group transition-colors">
+                            <div class="p-2 rounded-lg group-hover:bg-[#EFEAE0] transition-colors">
+                                <i class="bi bi-share text-lg"></i>
+                            </div>
+                            <span class="text-sm font-medium">Share</span>
                         </button>
                     </div>
-                    <button class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <button class="text-[#8B95A0] hover:text-[#C6862E] p-2 rounded-lg hover:bg-[#FBF3E4] transition-all duration-300">
                         <i class="bi bi-bookmark text-lg"></i>
                     </button>
                 </div>
@@ -309,4 +415,57 @@ const formatTimeAgo = (timestamp) => {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&display=swap');
+
+.font-heading {
+    font-family: 'Lora', Georgia, serif;
+    letter-spacing: -0.01em;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+}
+
+/* Smooth transitions for interactive elements */
+:root {
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced focus states for accessibility */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 2px solid #C6862E;
+    outline-offset: 2px;
+}
+
+/* Refined scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F7F5F0;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #C6862E;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #B37726;
+}
 </style>

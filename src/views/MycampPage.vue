@@ -1,47 +1,47 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+    <div class="study-social-root min-h-screen bg-[#F7F5F0]">
         <!-- Desktop Header -->
-        <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <header class="bg-[#1C2B39] shadow-sm border-b border-[#0F1822] sticky top-0 z-50">
             <div class="px-6 lg:px-12">
                 <div class="flex justify-between items-center py-5">
                     <div class="flex items-center space-x-4">
                         <div
-                            class="w-12 h-12 bg-gradient-to-r from-gray-300 to-black rounded-xl flex items-center justify-center">
-                            <i class="bi bi-mortarboard-fill text-white text-xl"></i>
+                            class="w-12 h-12 bg-[#C6862E] rounded-xl flex items-center justify-center">
+                            <i class="bi bi-mortarboard-fill text-[#1C2B39] text-xl"></i>
                         </div>
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-900">Study Social</h1>
-                            <p class="text-sm text-gray-500">
+                            <h1 class="font-heading text-2xl font-semibold text-white tracking-tight">Study Social</h1>
+                            <p class="text-sm text-white/55">
     {{ userRole === 'student' ? 'You signed up as a Student' : 'You signed up as a Lecturer' }}
 </p>
                         </div>
                     </div>
 
-                    <div class="flex items-center space-x-6">
+                    <div class="flex items-center space-x-5">
                         <!-- Notifications -->
                         <div class="relative">
                             <button @click="activeTab = 'messages'"
-                                class="p-2 text-gray-600 hover:text-gray-900 relative transition-colors">
+                                class="p-2 text-white/70 hover:text-white relative transition-colors">
                                 <i class="bi bi-bell text-xl"></i>
                                 <span v-if="notifications > 0"
-                                    class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
+                                    class="absolute -top-1 -right-1 bg-[#8B3A3A] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
                                     {{ notifications }}
                                 </span>
                             </button>
                         </div>
 
                         <!-- SignOut -->
-                        <div class="">
+                        <div>
                             <button @click="handleSignOut"
-                                class="p-2 bg-pink-400 hover:bg-pink-700 rounded-xl   text-white hover:text-gray-300 relative transition-colors">
-                                Signout
+                                class="px-4 py-2 border border-white/20 rounded-lg text-white/80 hover:bg-white/10 hover:text-white text-sm font-medium transition-colors">
+                                Sign out
                             </button>
                         </div>
 
                         <!-- Profile -->
                         <div
-                            class="w-10 h-10 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
-                            <span class="text-white text-base font-semibold">A</span>
+                            class="w-10 h-10 bg-[#C6862E] rounded-full flex items-center justify-center">
+                            <span class="text-[#1C2B39] text-base font-semibold">{{ username ? username.charAt(0).toUpperCase() : 'S' }}</span>
                         </div>
                     </div>
                 </div>
@@ -52,44 +52,44 @@
         <div class="px-6 lg:px-12 py-8">
             <div class="flex flex-col lg:flex-row gap-8">
                 <!-- Sidebar Navigation - Fixed for desktop -->
-                <aside class="w-full lg:w-80 lg:flex-shrink-0">
-                    <nav class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:sticky lg:top-28">
-                        <ul class="space-y-3">
+                <aside class="w-full lg:w-72 lg:flex-shrink-0">
+                    <nav class="bg-white rounded-xl border border-[#E4E0D8] p-3 lg:sticky lg:top-28">
+                        <ul class="space-y-1">
                             <li>
                                 <button @click="activeTab = 'dashboard'"
-                                    :class="['w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-base', activeTab === 'dashboard' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100']">
+                                    :class="['w-full flex items-center space-x-3 pl-3 pr-4 py-3 rounded-lg transition-colors text-base border-l-4', activeTab === 'dashboard' ? 'bg-[#FBF3E4] text-[#1C2B39] border-[#C6862E] font-medium' : 'text-[#5B6672] hover:bg-[#F7F5F0] border-transparent']">
                                     <i class="bi bi-speedometer2 text-lg"></i>
                                     <span>Dashboard</span>
                                 </button>
                             </li>
                             <li>
                                 <button @click="activeTab = 'courses'"
-                                    :class="['w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-base', activeTab === 'courses' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100']">
+                                    :class="['w-full flex items-center space-x-3 pl-3 pr-4 py-3 rounded-lg transition-colors text-base border-l-4', activeTab === 'courses' ? 'bg-[#FBF3E4] text-[#1C2B39] border-[#C6862E] font-medium' : 'text-[#5B6672] hover:bg-[#F7F5F0] border-transparent']">
                                     <i class="bi bi-book text-lg"></i>
                                     <span>Courses</span>
                                 </button>
                             </li>
                             <li>
                                 <button @click="activeTab = 'messages'"
-                                    :class="['w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-base', activeTab === 'messages' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100']">
+                                    :class="['w-full flex items-center space-x-3 pl-3 pr-4 py-3 rounded-lg transition-colors text-base border-l-4', activeTab === 'messages' ? 'bg-[#FBF3E4] text-[#1C2B39] border-[#C6862E] font-medium' : 'text-[#5B6672] hover:bg-[#F7F5F0] border-transparent']">
                                     <i class="bi bi-chat-dots text-lg"></i>
                                     <span>Messages</span>
                                     <span v-if="unreadMessages > 0"
-                                        class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                                        class="ml-auto bg-[#C6862E] text-[#1C2B39] text-xs px-2 py-0.5 rounded-full font-semibold">
                                         {{ unreadMessages }}
                                     </span>
                                 </button>
                             </li>
                             <li>
                                 <button @click="activeTab = 'content'"
-                                    :class="['w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-base', activeTab === 'content' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100']">
+                                    :class="['w-full flex items-center space-x-3 pl-3 pr-4 py-3 rounded-lg transition-colors text-base border-l-4', activeTab === 'content' ? 'bg-[#FBF3E4] text-[#1C2B39] border-[#C6862E] font-medium' : 'text-[#5B6672] hover:bg-[#F7F5F0] border-transparent']">
                                     <i class="bi bi-file-earmark-text text-lg"></i>
                                     <span>Test</span>
                                 </button>
                             </li>
                             <li>
                                 <button @click="activeTab = 'assignments'"
-                                    :class="['w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-base', activeTab === 'assignments' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:bg-gray-100']">
+                                    :class="['w-full flex items-center space-x-3 pl-3 pr-4 py-3 rounded-lg transition-colors text-base border-l-4', activeTab === 'assignments' ? 'bg-[#FBF3E4] text-[#1C2B39] border-[#C6862E] font-medium' : 'text-[#5B6672] hover:bg-[#F7F5F0] border-transparent']">
                                     <i class="bi bi-clipboard-check text-lg"></i>
                                     <span>Assignments</span>
                                 </button>
@@ -116,36 +116,36 @@
                     <!-- Messages -->
                     <div v-if="activeTab === 'messages'" class="space-y-6">
                         <div class="flex justify-between items-center mb-2">
-                            <h2 class="text-3xl font-bold">Messages</h2>
+                            <h2 class="font-heading text-3xl font-semibold text-[#1C2B39]">Messages</h2>
                             <button
-                                class="bg-blue-600 text-white px-5 py-2.5 rounded-lg flex items-center space-x-2 hover:bg-blue-700 transition-colors">
+                                class="bg-[#C6862E] text-[#1C2B39] px-5 py-2.5 rounded-lg flex items-center space-x-2 hover:bg-[#B37726] hover:text-white transition-colors font-medium">
                                 <i class="bi bi-plus-circle text-lg"></i>
                                 <span class="text-base">New Message</span>
                             </button>
                         </div>
 
-                        <div class="bg-white rounded-lg shadow-sm border border-gray-100">
+                        <div class="bg-white rounded-xl border border-[#E4E0D8]">
                             <div v-for="(message, index) in messages" :key="message.id"
-                                :class="['p-5 hover:bg-gray-50 cursor-pointer', index !== messages.length - 1 ? 'border-b border-gray-100' : '']">
+                                :class="['p-5 hover:bg-[#F7F5F0] cursor-pointer transition-colors', index !== messages.length - 1 ? 'border-b border-[#E4E0D8]' : '']">
                                 <div class="flex items-start space-x-4">
-                                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                                        <i class="bi bi-person text-blue-600 text-lg"></i>
+                                    <div class="w-12 h-12 bg-[#EFEAE0] rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="bi bi-person text-[#1C2B39] text-lg"></i>
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between mb-1">
                                             <h4
-                                                :class="['font-medium text-base', message.unread ? 'text-gray-900' : 'text-gray-700']">
+                                                :class="['text-base', message.unread ? 'font-semibold text-[#1C2B39]' : 'font-medium text-[#5B6672]']">
                                                 {{ message.sender }}
                                             </h4>
-                                            <span class="text-sm text-gray-500">{{ message.time }}</span>
+                                            <span class="text-sm text-[#8B95A0]">{{ message.time }}</span>
                                         </div>
                                         <h5
-                                            :class="['text-base mb-1', message.unread ? 'font-medium text-gray-900' : 'text-gray-700']">
+                                            :class="['text-base mb-1', message.unread ? 'font-medium text-[#1C2B39]' : 'text-[#5B6672]']">
                                             {{ message.subject }}
                                         </h5>
-                                        <p class="text-base text-gray-600 truncate">{{ message.preview }}</p>
+                                        <p class="text-base text-[#8B95A0] truncate">{{ message.preview }}</p>
                                     </div>
-                                    <div v-if="message.unread" class="w-3 h-3 bg-blue-600 rounded-full mt-2"></div>
+                                    <div v-if="message.unread" class="w-2.5 h-2.5 bg-[#C6862E] rounded-full mt-2 flex-shrink-0"></div>
                                 </div>
                             </div>
                         </div>
@@ -154,9 +154,9 @@
                     <!-- Test (formerly Content) -->
                     <div v-if="activeTab === 'content'" class="space-y-6">
                         <div class="flex justify-between items-center mb-2">
-                            <h2 class="text-3xl font-bold">Take a Test</h2>
+                            <h2 class="font-heading text-3xl font-semibold text-[#1C2B39]">Take a Test</h2>
                             <button v-if="testStep !== 'select-faculty'" @click="resetTest"
-                                class="text-gray-600 hover:text-gray-900 flex items-center space-x-2 text-sm">
+                                class="text-[#5B6672] hover:text-[#1C2B39] flex items-center space-x-2 text-sm font-medium transition-colors">
                                 <i class="bi bi-arrow-left"></i>
                                 <span>Start Over</span>
                             </button>
@@ -164,32 +164,32 @@
 
                         <!-- Step 1: Select Faculty -->
                         <div v-if="testStep === 'select-faculty'" class="space-y-4">
-                            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-5">
+                            <div class="bg-white rounded-lg border border-[#E4E0D8] p-4 focus-within:border-[#C6862E] transition-colors">
                                 <div class="flex items-center space-x-4">
-                                    <i class="bi bi-search text-gray-400 text-lg"></i>
+                                    <i class="bi bi-search text-[#8B95A0] text-lg"></i>
                                     <input v-model="testSearchQuery" type="text" placeholder="Search faculty..."
-                                        class="flex-1 outline-none text-base" />
+                                        class="flex-1 outline-none text-base bg-transparent placeholder:text-[#8B95A0]" />
                                 </div>
                             </div>
 
-                            <p class="text-gray-600">Select your faculty at Olabisi Onabanjo University (OOU)</p>
+                            <p class="text-[#5B6672]">Select your faculty at Olabisi Onabanjo University (OOU)</p>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div v-for="faculty in filteredTestFaculties" :key="faculty.id"
                                     @click="selectTestFaculty(faculty)"
-                                    class="bg-white rounded-lg shadow-sm border border-gray-100 p-5 cursor-pointer hover:border-blue-400 hover:shadow-md transition-all">
+                                    class="bg-white rounded-xl border border-[#E4E0D8] p-5 cursor-pointer hover:border-[#C6862E] transition-colors">
                                     <div class="flex items-center space-x-3">
-                                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                                            <i class="bi bi-bank text-blue-600 text-xl"></i>
+                                        <div class="w-12 h-12 bg-[#FBF3E4] rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i class="bi bi-bank text-[#C6862E] text-xl"></i>
                                         </div>
                                         <div>
-                                            <h4 class="font-semibold text-gray-900 text-base">{{ faculty.name }}</h4>
-                                            <p class="text-sm text-gray-500">{{ faculty.departments.length }} departments</p>
+                                            <h4 class="font-semibold text-[#1C2B39] text-base">{{ faculty.name }}</h4>
+                                            <p class="text-sm text-[#8B95A0]">{{ faculty.departments.length }} departments</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div v-if="filteredTestFaculties.length === 0" class="col-span-full text-center text-gray-500 py-8">
+                                <div v-if="filteredTestFaculties.length === 0" class="col-span-full text-center text-[#8B95A0] py-8">
                                     No faculty matches "{{ testSearchQuery }}"
                                 </div>
                             </div>
@@ -197,41 +197,41 @@
 
                         <!-- Step 2: Select Department -->
                         <div v-if="testStep === 'select-department'" class="space-y-4">
-                            <div class="flex items-center space-x-2 text-sm text-gray-500">
-                                <button @click="backToFaculties" class="hover:text-blue-600 flex items-center space-x-1">
+                            <div class="flex items-center space-x-2 text-sm text-[#8B95A0]">
+                                <button @click="backToFaculties" class="hover:text-[#1C2B39] flex items-center space-x-1 transition-colors">
                                     <i class="bi bi-arrow-left"></i>
                                     <span>Faculties</span>
                                 </button>
                                 <i class="bi bi-chevron-right"></i>
-                                <span class="font-medium text-gray-800">{{ selectedTestFaculty.name }}</span>
+                                <span class="font-medium text-[#1C2B39]">{{ selectedTestFaculty.name }}</span>
                             </div>
 
-                            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-5">
+                            <div class="bg-white rounded-lg border border-[#E4E0D8] p-4 focus-within:border-[#C6862E] transition-colors">
                                 <div class="flex items-center space-x-4">
-                                    <i class="bi bi-search text-gray-400 text-lg"></i>
+                                    <i class="bi bi-search text-[#8B95A0] text-lg"></i>
                                     <input v-model="testSearchQuery" type="text" placeholder="Search department..."
-                                        class="flex-1 outline-none text-base" />
+                                        class="flex-1 outline-none text-base bg-transparent placeholder:text-[#8B95A0]" />
                                 </div>
                             </div>
 
-                            <p class="text-gray-600">Select a department under {{ selectedTestFaculty.name }}</p>
+                            <p class="text-[#5B6672]">Select a department under {{ selectedTestFaculty.name }}</p>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div v-for="department in filteredTestDepartments" :key="department.id"
                                     @click="selectTestDepartment(department)"
-                                    class="bg-white rounded-lg shadow-sm border border-gray-100 p-5 cursor-pointer hover:border-blue-400 hover:shadow-md transition-all">
+                                    class="bg-white rounded-xl border border-[#E4E0D8] p-5 cursor-pointer hover:border-[#C6862E] transition-colors">
                                     <div class="flex items-center space-x-3">
-                                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                                            <i class="bi bi-journal-bookmark text-green-600 text-xl"></i>
+                                        <div class="w-12 h-12 bg-[#E9F2EF] rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i class="bi bi-journal-bookmark text-[#2F6F5E] text-xl"></i>
                                         </div>
                                         <div>
-                                            <h4 class="font-semibold text-gray-900 text-base">{{ department.name }}</h4>
-                                            <p class="text-sm text-gray-500">Tap to start a 10-question test</p>
+                                            <h4 class="font-semibold text-[#1C2B39] text-base">{{ department.name }}</h4>
+                                            <p class="text-sm text-[#8B95A0]">Tap to start a 10-question test</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div v-if="filteredTestDepartments.length === 0" class="col-span-full text-center text-gray-500 py-8">
+                                <div v-if="filteredTestDepartments.length === 0" class="col-span-full text-center text-[#8B95A0] py-8">
                                     No department matches "{{ testSearchQuery }}"
                                 </div>
                             </div>
@@ -239,37 +239,37 @@
 
                         <!-- Step 3: Taking the Test -->
                         <div v-if="testStep === 'test'" class="space-y-6">
-                            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+                            <div class="bg-[#1C2B39] rounded-xl p-6">
                                 <div class="flex items-center justify-between mb-2">
-                                    <h3 class="text-xl font-bold text-gray-900">{{ selectedTestDepartment.name }} Test</h3>
-                                    <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
+                                    <h3 class="font-heading text-xl font-semibold text-white">{{ selectedTestDepartment.name }} Test</h3>
+                                    <span class="bg-[#C6862E] text-[#1C2B39] text-sm px-3 py-1 rounded-full font-semibold">
                                         {{ answeredCount }} / {{ currentQuestions.length }} answered
                                     </span>
                                 </div>
-                                <p class="text-gray-500 text-sm">{{ selectedTestFaculty.name }}</p>
+                                <p class="text-white/55 text-sm">{{ selectedTestFaculty.name }}</p>
                             </div>
 
                             <div v-for="(question, index) in currentQuestions" :key="question.id"
-                                class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-                                <h4 class="font-semibold text-gray-900 text-base mb-4">
+                                class="bg-white rounded-xl border border-[#E4E0D8] p-6">
+                                <h4 class="font-medium text-[#1C2B39] text-base mb-4">
                                     {{ index + 1 }}. {{ question.question }}
                                 </h4>
                                 <div class="space-y-2">
                                     <label v-for="(option, oIndex) in question.options" :key="oIndex"
                                         :class="['flex items-center space-x-3 p-3 rounded-lg border cursor-pointer transition-colors',
-                                            userAnswers[question.id] === oIndex ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-50']">
+                                            userAnswers[question.id] === oIndex ? 'border-[#C6862E] bg-[#FBF3E4]' : 'border-[#E4E0D8] hover:bg-[#F7F5F0]']">
                                         <input type="radio" :name="'question-' + question.id"
                                             :checked="userAnswers[question.id] === oIndex"
-                                            @change="userAnswers[question.id] = oIndex" class="text-blue-600">
-                                        <span class="text-base text-gray-700">{{ option }}</span>
+                                            @change="userAnswers[question.id] = oIndex" class="accent-[#C6862E]">
+                                        <span class="text-base text-[#1C2B39]">{{ option }}</span>
                                     </label>
                                 </div>
                             </div>
 
-                            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 flex justify-between items-center">
-                                <p class="text-sm text-gray-500">You can review your answers before submitting.</p>
+                            <div class="bg-white rounded-xl border border-[#E4E0D8] p-6 flex justify-between items-center">
+                                <p class="text-sm text-[#8B95A0]">You can review your answers before submitting.</p>
                                 <button @click="submitTest"
-                                    class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors">
+                                    class="bg-[#1C2B39] text-white px-6 py-2.5 rounded-lg hover:bg-[#24384A] transition-colors font-medium">
                                     Submit Test
                                 </button>
                             </div>
@@ -277,15 +277,15 @@
 
                         <!-- Step 4: Result -->
                         <div v-if="testStep === 'result'" class="space-y-6">
-                            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-8 text-center">
-                                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <i class="bi bi-check-circle text-green-600 text-3xl"></i>
+                            <div class="bg-white rounded-xl border border-[#E4E0D8] p-8 text-center">
+                                <div class="w-16 h-16 bg-[#E9F2EF] rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="bi bi-check-circle text-[#2F6F5E] text-3xl"></i>
                                 </div>
-                                <h3 class="text-2xl font-bold text-gray-900 mb-2">Test Submitted!</h3>
-                                <p class="text-gray-600 mb-1">{{ selectedTestDepartment.name }} • {{ selectedTestFaculty.name }}</p>
-                                <p class="text-4xl font-bold text-blue-600 my-4">{{ testScore }} / {{ currentQuestions.length }}</p>
+                                <h3 class="font-heading text-2xl font-semibold text-[#1C2B39] mb-2">Test Submitted!</h3>
+                                <p class="text-[#5B6672] mb-1">{{ selectedTestDepartment.name }} • {{ selectedTestFaculty.name }}</p>
+                                <p class="font-heading text-4xl font-semibold text-[#1C2B39] my-4">{{ testScore }} / {{ currentQuestions.length }}</p>
                                 <button @click="resetTest"
-                                    class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors">
+                                    class="bg-[#C6862E] text-[#1C2B39] px-6 py-2.5 rounded-lg hover:bg-[#B37726] hover:text-white transition-colors font-medium">
                                     Take Another Test
                                 </button>
                             </div>
@@ -295,9 +295,9 @@
                     <!-- Assignments -->
                     <div v-if="activeTab === 'assignments'" class="space-y-6">
                         <div class="flex justify-between items-center mb-2">
-                            <h2 class="text-3xl font-bold">Assignments</h2>
+                            <h2 class="font-heading text-3xl font-semibold text-[#1C2B39]">Assignments</h2>
                             <button v-if="userRole === 'lecturer'"
-                                class="bg-purple-600 text-white px-5 py-2.5 rounded-lg flex items-center space-x-2 hover:bg-purple-700 transition-colors">
+                                class="bg-[#C6862E] text-[#1C2B39] px-5 py-2.5 rounded-lg flex items-center space-x-2 hover:bg-[#B37726] hover:text-white transition-colors font-medium">
                                 <i class="bi bi-plus-circle text-lg"></i>
                                 <span class="text-base">Create Assignment</span>
                             </button>
@@ -305,20 +305,20 @@
 
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div v-for="assignment in assignments" :key="assignment.id"
-                                class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+                                class="bg-white rounded-xl border border-[#E4E0D8] p-6">
                                 <div class="flex items-start justify-between mb-4">
                                     <div>
-                                        <h3 class="font-semibold text-xl">{{ assignment.title }}</h3>
-                                        <p class="text-gray-600 text-base">{{ assignment.course }}</p>
+                                        <h3 class="font-semibold text-xl text-[#1C2B39]">{{ assignment.title }}</h3>
+                                        <p class="text-[#5B6672] text-base">{{ assignment.course }}</p>
                                     </div>
                                     <span :class="['px-3 py-1.5 rounded-full text-sm font-medium',
-                                        assignment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                            assignment.status === 'submitted' ? 'bg-green-100 text-green-800' :
-                                                'bg-red-100 text-red-800']">
+                                        assignment.status === 'pending' ? 'bg-[#FBF3E4] text-[#C6862E]' :
+                                            assignment.status === 'submitted' ? 'bg-[#E9F2EF] text-[#2F6F5E]' :
+                                                'bg-[#F7E9E9] text-[#8B3A3A]']">
                                         {{ assignment.status }}
                                     </span>
                                 </div>
-                                <div class="space-y-2 text-base text-gray-600">
+                                <div class="space-y-2 text-base text-[#5B6672]">
                                     <div class="flex items-center">
                                         <i class="bi bi-calendar mr-2"></i>
                                         Due: {{ assignment.dueDate }}
@@ -328,11 +328,11 @@
                                         {{ assignment.timeLeft }}
                                     </div>
                                 </div>
-                                <div class="mt-5 pt-5 border-t border-gray-100">
+                                <div class="mt-5 pt-5 border-t border-[#E4E0D8]">
     <button @click="handleSubmitAssignment(assignment.id)"
         :disabled="assignment.status === 'submitted'"
-        class="w-full py-2.5 rounded-lg text-base transition-colors"
-        :class="assignment.status === 'submitted' ? 'bg-green-600 text-white cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'">
+        class="w-full py-2.5 rounded-lg text-base transition-colors font-medium"
+        :class="assignment.status === 'submitted' ? 'bg-[#2F6F5E] text-white cursor-not-allowed' : 'bg-[#1C2B39] text-white hover:bg-[#24384A]'">
         <span v-if="assignment.status === 'submitted'">
             <i class="bi bi-check-circle-fill mr-1"></i> Yes, it has been submitted
         </span>
@@ -348,23 +348,23 @@
 
         <!-- Delete Confirmation Modal -->
         <div v-if="showDeleteModal"
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+            class="fixed inset-0 bg-[#1C2B39]/60 flex items-center justify-center z-50 px-4">
             <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full">
                 <div class="text-center">
-                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="bi bi-exclamation-triangle text-red-600 text-2xl"></i>
+                    <div class="w-16 h-16 bg-[#F7E9E9] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="bi bi-exclamation-triangle text-[#8B3A3A] text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Delete Post?</h3>
-                    <p class="text-gray-600 mb-6">Are you sure you want to delete this post? This action cannot be
+                    <h3 class="font-heading text-xl font-semibold text-[#1C2B39] mb-2">Delete Post?</h3>
+                    <p class="text-[#5B6672] mb-6">Are you sure you want to delete this post? This action cannot be
                         undone.</p>
 
                     <div class="flex space-x-3">
                         <button @click="cancelDelete"
-                            class="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                            class="flex-1 px-4 py-2.5 border border-[#E4E0D8] text-[#1C2B39] rounded-lg hover:bg-[#F7F5F0] transition-colors font-medium">
                             No, Cancel
                         </button>
                         <button @click="confirmDelete"
-                            class="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                            class="flex-1 px-4 py-2.5 bg-[#8B3A3A] text-white rounded-lg hover:bg-[#732E2E] transition-colors font-medium">
                             Yes, Delete
                         </button>
                     </div>
@@ -823,5 +823,21 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Add any custom styles here if needed */
+/* Design system: an academic identity built around navy, gold, teal and hairline borders
+   rather than generic SaaS gradients and pill-badges.
+   NOTE: for best results, add this Google Fonts link to your index.html <head> instead
+   of relying on the @import below (faster load, no render-blocking):
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@500;600;700&display=swap" rel="stylesheet">
+*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@500;600;700&display=swap');
+
+.study-social-root {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+.font-heading {
+    font-family: 'Lora', Georgia, serif;
+    letter-spacing: -0.01em;
+}
 </style>
